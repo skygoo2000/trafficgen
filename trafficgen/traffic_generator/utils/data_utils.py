@@ -47,10 +47,10 @@ def process_case_to_input(case, agent_range=60):
 
 def get_type_class(line_type):
     from metadrive.scenario.scenario_description import ScenarioDescription as SD, MetaDriveType
-    from metadrive.constants import LineType
+    # from metadrive.constants import LineType
 
     if line_type in range(1, 4):
-        return MetaDriveType.LANE_CENTER_LINE
+        return MetaDriveType.DRIVEWAY
     elif line_type == 6:
         return MetaDriveType.LINE_BROKEN_SINGLE_WHITE
         # return RoadLineType.BROKEN_SINGLE_WHITE
@@ -86,13 +86,13 @@ def get_type_class(line_type):
         # return 'other'
 
 
-def from_list_to_batch(inp_list):
+def from_list_to_batch(inp_list, device):
     keys = inp_list[0].keys()
 
     batch = {}
     for key in keys:
         one_item = [item[key] for item in inp_list]
-        batch[key] = Tensor(np.stack(one_item))
+        batch[key] = Tensor(np.stack(one_item)).to(device)
 
     return batch
 

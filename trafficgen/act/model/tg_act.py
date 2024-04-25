@@ -102,14 +102,14 @@ class actuator(pl.LightningModule):
         loss, loss_dict = act_loss(pred, batch)
         # pred['prob'] = nn.Sigmoid()(pred['prob'])
 
-        loss_dict = {'train/' + k: v for k, v in loss.items()}
+        loss_dict = {'train/' + k: v for k, v in loss_dict.items()}
         self.log_dict(loss_dict)
         return loss
 
     def validation_step(self, batch, batch_idx):
         pred = self.forward(batch)
         loss, loss_dict = act_loss(pred, batch)
-        loss_dict = {'val/' + k: v for k, v in loss.items()}
+        loss_dict = {'val/' + k: v for k, v in loss_dict.items()}
         self.log_dict(loss_dict)
         return loss
 
@@ -123,8 +123,8 @@ class actuator(pl.LightningModule):
         agent = data['agent']
         agent_mask = data['agent_mask']
 
-        all_vec = torch.cat([data['center'], data['cross'], data['bound']], dim=-2)
-        line_mask = torch.cat([data['center_mask'], data['cross_mask'], data['bound_mask']], dim=1)
+        all_vec = torch.cat([data['center'], data['cross'], data['bound']], dim=-2).to(self.device)
+        line_mask = torch.cat([data['center_mask'], data['cross_mask'], data['bound_mask']], dim=1).to(self.device)
 
         polyline = all_vec[..., :4]
         polyline_type = all_vec[..., 4].to(int)

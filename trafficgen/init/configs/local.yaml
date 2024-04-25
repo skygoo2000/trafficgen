@@ -2,19 +2,19 @@
 format_version: 4
 device_num: 1
 map_size: 50
-device: 'cpu'
+device: 'cuda'
 
 use_cache: False
 debug: True
-data_path: 'init/sample_data'
+data_path: 'init\processed_data'
 sample_gap: 20
 
 max_epoch: 50
-num_workers: 0
-batch_size: 4
+num_workers: 6
+batch_size: 32
 lr: 0.0003
 weight_decay: 0.0004
-data_usage: 4
+data_usage: 100
 hidden_dim: 1024
 gaussian_comp: 5
 

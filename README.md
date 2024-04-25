@@ -19,8 +19,8 @@ conda create -n trafficgen python=3.8
 conda activate trafficgen
 
 # You should install pytorch by yourself to make them compatible with your GPU
-# For cuda 11.0:
-pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+# For cuda 11.8:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 # Install basic dependency
 pip install -e .
 ```

@@ -1,4 +1,5 @@
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 matplotlib.rcParams.update({'figure.max_open_warning': 0})
@@ -86,6 +87,7 @@ def draw(center, agents, other, heat_map=None, save=False, edge=None, path='../v
     if save:
         fig.savefig(path, dpi=100, bbox_inches='tight', pad_inches=0)
 
+    plt.close()
     return plt
 
 
@@ -196,5 +198,6 @@ def draw_seq(center, agents, traj=None, other=None, heat_map=False, save=False, 
     plt.autoscale()
     if save:
         fig.savefig(path, dpi=100, bbox_inches='tight', pad_inches=0)
-
+    
+    plt.close()
     return plt

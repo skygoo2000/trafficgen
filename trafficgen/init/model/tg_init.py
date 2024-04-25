@@ -132,7 +132,7 @@ class initializer(pl.LightningModule):
             # speed = torch.clip(pred['speed'].sample(),min=0)
             # speed_logprob = pred['speed'].log_prob(speed)
 
-            agents = get_agent_pos_from_vec(center_lane, pos[0], speed[0], vel_heading[0], heading[0], bbox[0])
+            agents = get_agent_pos_from_vec(center_lane.to(self.device), pos[0], speed[0].to(self.device), vel_heading[0].to(self.device), heading[0].to(self.device), bbox[0])
             agents_list.append(agents)
             pos_logprob_ = pos_logprob[0, the_indx]
             heading_logprob_ = heading_logprob[0, the_indx]
@@ -231,8 +231,8 @@ class initializer(pl.LightningModule):
 
     def agent_feature_extract(self, agent_feat, agent_mask, random_mask):
         agent = agent_feat[..., :-2]
-        agent_line_type = agent_feat[..., -2].to(int)
-        agent_line_traf = agent_feat[..., -1].to(int)
+        agent_line_type = agent_feat[..., -2].to(int).to(agent.device)
+        agent_line_traf = agent_feat[..., -1].to(int).to(agent.device)
         # agent_line_traf = torch.zeros_like(agent_line_traf).to(agent.device)
 
         agent_line_type_embed = self.type_embedding(agent_line_type)
@@ -385,8 +385,8 @@ class initializer(pl.LightningModule):
 
     def forward(self, data, random_mask=True):
 
-        context_agent = self.agent_feature_extract(data['agent_feat'], data['agent_mask'], random_mask)
-        feature = self.map_feature_extract(data['lane_inp'], data['lane_mask'], context_agent)
+        context_agent = self.agent_feature_extract(data['agent_feat'].to(self.device), data['agent_mask'].to(self.device), random_mask)
+        feature = self.map_feature_extract(data['lane_inp'].to(self.device), data['lane_mask'].to(self.device), context_agent)
         center_num = data['center'].shape[1]
         feature = feature[:, :center_num]
         # Sample location, bounding box, heading and velocity.

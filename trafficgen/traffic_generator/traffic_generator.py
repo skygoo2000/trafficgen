@@ -24,7 +24,8 @@ class TrafficGen:
     def __init__(self, cfg):
         self.cfg = cfg
         self.init_model = initializer.load_from_checkpoint(
-            os.path.join(TRAFFICGEN_ROOT, "traffic_generator", "ckpt", "init.ckpt")
+            os.path.join(TRAFFICGEN_ROOT, "traffic_generator", "ckpt", "init.ckpt"), 
+            map_location=cfg['device']
         )
         # act = actuator()
         # state = torch.load('traffic_generator/ckpt/act.ckpt', map_location='cpu')
@@ -32,7 +33,8 @@ class TrafficGen:
         # act.load_state_dict(state["state_dict"])
         # self.act_model = act
         self.act_model = actuator.load_from_checkpoint(
-            os.path.join(TRAFFICGEN_ROOT, "traffic_generator", "ckpt", "act.ckpt")
+            os.path.join(TRAFFICGEN_ROOT, "traffic_generator", "ckpt", "act.ckpt"),
+            map_location=cfg['device']
         )
         init_dataset = InitDataset(cfg)
         self.data_loader = DataLoader(init_dataset, shuffle=False, batch_size=1, num_workers=0)
@@ -93,7 +95,7 @@ class TrafficGen:
         data_path = self.cfg['data_path']
         with torch.no_grad():
             for idx, data in enumerate(tqdm(self.data_loader)):
-                data_file_path = os.path.join(data_path, f'{idx}.pkl')
+                data_file_path = os.path.join(TRAFFICGEN_ROOT, data_path, f'{idx}.pkl')
                 with open(data_file_path, 'rb+') as f:
                     original_data = pickle.load(f)
 
@@ -247,8 +249,9 @@ class TrafficGen:
             inp_list = []
             for case in case_list:
                 inp_list.append(process_case_to_input(case))
-            batch = from_list_to_batch(inp_list)
+            batch = from_list_to_batch(inp_list, self.cfg['device'])
 
+            self.act_model.to(self.cfg['device'])
             pred = self.act_model(batch)
             prob = pred['prob']
             velo_pred = pred['velo']
